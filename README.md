@@ -28,4 +28,4 @@ See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-webpack/quas
 
 github repo
 
-<https://github.com/AMRWERY/Twitter-clone---quasar>
+https://github.com/AMRWERY/Twitter-clone---quasar
