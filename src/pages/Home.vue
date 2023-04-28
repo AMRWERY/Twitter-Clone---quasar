@@ -53,7 +53,7 @@
                 <span class="text-grey-7">
                   @janet__smith
                   <br class="lt-md" />
-                  &bull; {{ tweet.date }}
+                  &bull; {{ new Date(tweet.date).toLocaleString() }}
                 </span>
               </q-item-label>
               <q-item-label class="text-body1">{{
@@ -89,6 +89,13 @@
                   icon="fa-solid fa-trash"
                   @click="deleteTweet(tweet)"
                 />
+                <q-btn
+                  flat
+                  round
+                  size="sm"
+                  color="grey"
+                  icon="fa-solid fa-arrow-up-from-bracket"
+                />
               </div>
             </q-item-section>
           </q-item>
@@ -101,41 +108,66 @@
 </template>
 
 <script>
+import db from "../boot/firebase";
+import {
+  getDocs,
+  collection,
+  query,
+  addDoc,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
+
 export default {
   name: "Home",
 
   data() {
     return {
       text: "",
-      tweets: [
-        {
-          content:
-            "A leader is best when people barely know he exists, when his work is done, his aim fulfilled, they will say: we did it ourselves.",
-          date: new Date().toLocaleTimeString(),
-        },
-        {
-          content:
-            "We are either progressing or retrograding all the while. There is no such thing as remaining stationary in this life.",
-          date: new Date().toLocaleTimeString(),
-        },
-      ],
+      tweets: [],
     };
   },
 
   methods: {
-    addNewTweet() {
-      let newTweet = {
+    async addNewTweet() {
+      const colRef = collection(db, "tweets");
+      const dataObj = {
         content: this.text,
         date: Date.now(),
+      };
+      const docRef = await addDoc(colRef, dataObj);
+      console.log("Document was created with ID:", docRef.id);
+      const newTweet = {
+        id: docRef.id,
+        ...dataObj,
       };
       this.tweets.unshift(newTweet);
       this.text = "";
     },
-    deleteTweet(tweet) {
-      let dateToDelete = tweet.date;
-      let index = this.tweets.findIndex((tweet) => tweet.date === dateToDelete);
-      this.tweets.splice(index, 1);
+    async deleteTweet(tweet) {
+      await deleteDoc(doc(db, "tweets", tweet.id));
+
+      const index = this.tweets.findIndex((t) => t.id === tweet.id);
+      if (index !== -1) {
+        this.tweets.splice(index, 1);
+      }
     },
+    async getData() {
+      const querySnap = await getDocs(query(collection(db, "tweets")));
+
+      querySnap.forEach((doc) => {
+        let tweet = {
+          id: doc.id,
+          ...doc.data(doc.id),
+        };
+        console.log(doc.id);
+        this.tweets.push(tweet);
+      });
+    },
+  },
+
+  mounted() {
+    this.getData();
   },
 };
 </script>
