@@ -14,7 +14,9 @@
           >
             <template v-slot:before>
               <q-avatar size="xl">
-                <img src="https://randomuser.me/api/portraits/men/85.jpg" />
+                <img
+                  src="https://justfields.com/storage/projects/7M5rV059/photo_2023-05-14_16-32-00.jpg"
+                />
               </q-avatar>
             </template>
           </q-input>
@@ -43,7 +45,9 @@
           <q-item v-for="tweet in tweets" :key="tweet.date">
             <q-item-section avatar top>
               <q-avatar>
-                <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
+                <img
+                  src="https://justfields.com/storage/projects/7M5rV059/photo_2023-05-14_16-32-00.jpg"
+                />
               </q-avatar>
             </q-item-section>
 
